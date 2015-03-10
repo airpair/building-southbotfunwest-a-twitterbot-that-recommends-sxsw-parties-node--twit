@@ -1,3 +1,5 @@
+## South-by Season
+
 It's that time of year, when a product manager's thoughts turn to daydrinking and the streets of Austin are turned into a bacchanalia of technology celebrating the almighty God of the Web &mdash; SXSW Interactive!
 
 SXSW has been the launching ground for many web businesses that have gone on to greater success, but none of them can hold a candle to the festival's own true prodigal son, Twitter, a technology that didn't even launch at the event &mdash; it actually [debuted 9 months earlier](http://mashable.com/2011/03/05/sxsw-launches/) &mdash; but became so popular at the 2008 festival that its rise became indelibly associated with the conference.
@@ -5,6 +7,8 @@ SXSW has been the launching ground for many web businesses that have gone on to 
 Twitter is appealing as a data source because its short snippets provide useful insight into the vagaries of popular sentiment &mdash; part of the reason it's being [archived for future generations](http://www.cnn.com/2010/TECH/04/14/library.congress.twitter/) by the Library of Congress. The social network is also a fantastic source for programmatic content: NASA has a twitter handle for posting high-definition images from the Hubble Space Telescope daily ([@HubbleDaily](https://twitter.com/hubbledaily)), another plank in the argument that just about *everyone* is getting on board the twitterbot bandwagon.
 
 With that in mind, let's use Node, everyone's favorite server-side Javascript solution, and `twit`, an npm package that taps into both the streaming and RESTful Twitter APIs, to build a bot that can harness the collective hipness of the Twitterati to provide that elusive social secret &mdash; the perfect SXSW party recommendation.
+
+## Setup
 
 If you haven't already, [install Node and npm](https://nodejs.org/download/), Node's fantastic package manager. When you've confirmed that they're in your path (an easy way to check is `which node` and `which npm`), create a directory for your project and navigate into it: We'll accomplish this with `mkdir SouthBotFunWest && cd SouthBotFunWest`
 
@@ -58,7 +62,9 @@ Start the bot with `node index.js`. You should see the data object associated wi
 
 ![Hello World Tweet](http://i57.tinypic.com/lxy6d.png)
 
-Success! 
+Success!
+
+## The Twitter Search API
 
 Now that we've got the basic proof of concept for the "posting to twitter" part of our twitterbot, we can look at the "finding the parties" portion. There are a few different ways one could go about writing a script that finds SXSW parties: we could write something that culled info from event websites using a web scraper like [PhantomJS](http://phantomjs.org/), we could use the API of a social network like Reddit to find party leads, or we could query a search engine hoping to find the actual RSVP pages of some honest-to-goodness bashes. 
 
@@ -162,6 +168,8 @@ Testing this code out with `search('SXSW music party')` we return the same resul
 
 That's all a good start. Now let's get to work on the responding-to-users part of the twitterbot, which will require the streaming API functionality of our `twit` client.
 
+## Making the Bot Interactive
+
 Looking at the API, it seems simple enough to open a stream tracking mentions of a specific word. In our case, since we want to track people who are tweeting at the bot, it makes sense to track our handle, @SouthBotFunWest. Here's the code to open a stream tracking our mentions logging both the tweets and their posters.
 
 ````javascript
@@ -216,6 +224,8 @@ Underneath the `console.log(asker + " tweeted: " + text);` in your `stream.on()`
 This code tokenizes the incoming tweet into an array of words, checks each word to see if it matches "hi," and &mdash; if it does &mdash; prints the word and our response message.  
 
 Try tweeting at your bot from another account with "hi" somewhere in the post. You should see "hi" and our response logged to the terminal!
+
+## Connecting Response and Search
 
 Recap: We've built a rudimentary search function that returns the text of the first matching tweet and the ability to match various keywords to the posts tweeted to us at @SouthBotFunWest. What's left? Linking up the two.
 
@@ -419,9 +429,25 @@ Now for the moment of truth: If we reach out to our bot with our script running,
 
 ... complete disaffection. It's enough to make any father proud!
 
+## Deployment
+
+So how would we go about actually setting up this script to run continously? Luckily for us Node has an excellent module for that &mdash; `forever` &mdash; that couldn't be easier to use.
+
+Simply install it on your Node-capable machine (note that unless you use a different module, `forever` needs to be installed globally)...
+
+`sudo npm install -g forever`
+
+Then start your script with:
+
+`forever start index.js`
+
+That's it! You might get a warning or two, but if you enter `forever list` you should see your process, along with its current uptime.
+
+## Parting Thoughts
+
 There are a lot of ways we could improve the current setup (check out [github](https://github.com/MarshalJoe/SouthBotFunWest) to see some extra tweaks I've made), but this fulfills our original goal &mdash; to build a bot that can respond to incoming tweets with a cheeky response and a link to an appropriate party.
 
-If you're interested in [another Node Twitterbot](http://bughunting.guide/building-bughuntbot-an-xss-payload-twitterbot-inspired-by-peter-kim/) or a very [gentle introduction to penetration testing, via XSS](http://bughunting.guide/a-gentle-introduction-to-cross-site-scripting-xss/), check out another project of mine, [bughunting.guide](http://bughunting.guide/)
+If you're interested in [another Node Twitterbot](http://bughunting.guide/building-bughuntbot-an-xss-payload-twitterbot-inspired-by-peter-kim/) or a very [gentle introduction to penetration testing, via XSS](http://bughunting.guide/a-gentle-introduction-to-cross-site-scripting-xss/), check out another project of mine, [bughunting.guide](http://bughunting.guide/).
 
 Otherwise, thanks for reading and I'll see you at SXSWi!
 
